@@ -1,11 +1,5 @@
 export default {
     users: {
-        3887932258: {
-            name: "luucc_ss",
-            displayName: "lulu",
-            preDisplay: "a",
-        }
-        /*
         99060139: {
             name: "JuliaMinegirl",
             displayName: "julia",
@@ -20,7 +14,7 @@ export default {
             name: "TexWillerHS",
             displayName: "tex",
             preDisplay: "o"
-        },*/
+        }
     },
     discord: {
         status: "JuliaMinegirl 🎀",
