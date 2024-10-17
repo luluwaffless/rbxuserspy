@@ -18,7 +18,6 @@ export default {
     },
     discord: {
         status: "JuliaMinegirl 🎀",
-        name: "rbxuserspy",
         statusPing: "1296525437576413204",
         playingPing: "1296525430689497088",
         vcStatusId: "1296162311308054528",
