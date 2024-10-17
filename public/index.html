@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=0.65">
+        <title>rbxuserspy by luluwaffless</title>
+        <script src="https://unpkg.com/twemoji@latest/dist/twemoji.min.js" crossorigin="anonymous"></script>
+        <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+        <style type="text/css">
+            body {
+                font-size: large;
+                text-align: center;
+                color: rgb(237, 237, 249);
+                background-color: hsl(333, 77%, 5%);
+                font-family: monospace;
+            }
+            .emoji {
+                width: 1em;
+                height: 1em;
+                vertical-align: middle;
+            }
+            .other {
+                color: #808080;
+            }
+            a {
+                color: #ffffff;
+            }
+            #container {
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                position: absolute;
+                border-radius: 10px;
+                padding: 10px;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                background-color: hsl(333, 77%, 10%);
+                box-shadow: 0px 0px 10px 5px rgba(10, 10, 20, 0.2);
+            }
+            .blue {
+                color: rgb(128, 128, 255);
+            }
+            .green {
+                color: rgb(128, 255, 128);
+            }
+            .red {
+                color: rgb(255, 128, 128);
+            }
+            .yellow {
+                color: rgb(255, 255, 128);
+            }
+            .small {
+                font-size: small; 
+                color: rgb(109, 109, 121); 
+                padding: 0; 
+                margin: 0;
+            }
+            #grid-container {
+                display: flex; /* Switch to flexbox */
+                gap: 10px; /* Add gap between items */
+            }
+            .item {
+                flex: 1 1 0; /* Ensure all items have equal width */
+                padding: 10px;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                border-radius: 10px;
+                background-color: hsl(333, 77%, 15%);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                white-space: nowrap;
+            }
+            .list {
+                text-align: left;
+            }
+            .center-item {
+                grid-column: span 2;
+                justify-self: center;
+            }
+        </style>
+	<link rel="icon" type="image/x-icon" href="icon.png">
+    </head>
+    <body>
+        <div id="container" class="containerOffline">
+            <div style="padding: 10px;">
+                <a href="#">home</a> <a class="other" href="/logs.txt">logs</a> <a class="other" href="/config">config</a><br><br>
+            </div>
+            <div class="title">
+                <span style="font-weight: bolder; font-size: xx-large; color: #ffffff;">rbxuserspy</span><br><span style="font-size: small; color: #808080;">by luluwaffless</span>
+            </div><br>
+            <div id="grid-container">
+                <div class="item">
+                    <span>👥 <a href="#" onclick="$.ajax({url:'/check'})">Users</a>:<div class="list"><br>🔎 Checks: <span class="blue" id="checks"></span><br>👥 Users:<br><span id="users"></span><br>⌛ Next Check: <span id="nextCheck" class="yellow"></span></div></span>
+                </div>
+                <div class="item center-item">
+                    <span>❌ Errors:<div class="list"><br>📖 Read: <span class="red" id="erd"></span><br>🌐 Fetch: <span class="red" id="efd"></span><br>💬 Message: <span class="red" id="esm"></span></div></span>
+                </div>
+            </div>
+            <div style="padding: 10px;">
+                <span class="small" >⏱️ Runtime: <span id="runtime"></span></span>
+            </div>
+        </div>
+    </body>
+    <script type="text/javascript">
+        twemoji.parse(
+            document.body,
+            { base: 'https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.2/assets/' }
+        );
+    </script>
+    <script type="text/javascript">
+        const info = {checks: document.getElementById("checks"), users: document.getElementById("users"), erd: document.getElementById("erd"), efd: document.getElementById("efd"), esm: document.getElementById("esm"), runtime: document.getElementById("runtime"), nextCheck: document.getElementById("nextCheck")};
+        function timeSince(timestamp) {
+            const now = new Date().getTime();
+            const diff = now - timestamp;
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            let parts = [];
+            if (hours) parts.push(hours);
+            if (minutes || hours) parts.push(minutes.toString().padStart(hours ? 2 : 1, '0'));
+            parts.push(seconds.toString().padStart(minutes || hours ? 2 : 1, '0'));
+            return parts.join(':');
+        };
+        function timeUntil(timestamp) {
+            const now = new Date().getTime();
+            const diff = timestamp - now;
+            if (diff < 1000) return 'checking...'; 
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            let parts = [];
+            if (hours) parts.push(hours);
+            if (minutes || hours) parts.push(minutes.toString().padStart(hours ? 2 : 1, '0'));
+            parts.push(seconds.toString().padStart(minutes || hours ? 2 : 1, '0'));
+            return parts.join(':');
+        };
+
+        $.ajax("/config", {
+            success: function(data) {
+                let innerHTML = [];
+                Object.keys(data.users).forEach(function(id) {
+                    const user = data.users[id];
+                    innerHTML.push(`- <a href="https://www.roblox.com/users/${id}/profile">${user.name}</a>: <a id="${id}" class="green"></a>`);
+                });
+                info.users.innerHTML = innerHTML.join("<br>");
+            }
+        });
+        function main() {
+            const statusText = ['Offline', 'Online', 'Playing', 'In Studio', 'Invisible'];
+            $.ajax("/info", {
+                success: function(data) {
+                    const nextCheck = new Date(data.nextCheck).getTime();
+                    const runtimeDate = new Date(data.startTime).getTime();
+                    info.checks.innerHTML = data.checks;
+                    info.erd.innerHTML = data.erd;
+                    info.efd.innerHTML = data.efd;
+                    info.esm.innerHTML = data.esm;
+                    Object.keys(data.users).forEach(function(id) {
+                        const user = data.users[id];
+                        const element = document.getElementById(id);
+                        if (user.status == 2 && user.lastLocation && user.placeId && user.gameId) {
+                            element.innerHTML = `Playing ${user.lastLocation}`;
+                            element.href = `roblox://experiences/start?placeId=${user.placeId}&gameInstanceId=${user.gameId}`;
+                        } else {
+                            element.innerHTML = statusText[user.status];
+                        };
+                    });
+                    info.runtime.innerHTML = timeSince(runtimeDate);
+                    info.nextCheck.innerHTML = timeUntil(nextCheck);
+                }
+            });
+            setTimeout(main, 1000);
+        };
+        main();
+    </script>
+</html>
