@@ -66,7 +66,6 @@ async function check(individual) {
         .then(function (response) {
             if (response.data["userPresences"] && response.data.userPresences.length > 0) {
                 response.data.userPresences.forEach((presence) => {
-                    console.log(presence);
                     const { userPresenceType, lastLocation, placeId, gameId, userId } = presence;
                     if (userPresenceType != sessionInfo.users[presence.userId].status || presence.gameId != sessionInfo.users[presence.userId].gameId) {
                         sessionInfo.users[userId].lastStatus = sessionInfo.users[userId].status;
