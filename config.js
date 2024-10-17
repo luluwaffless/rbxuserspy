@@ -21,8 +21,10 @@ export default {
         name: "rbxuserspy",
         displayName: "rbx user spy :3",
         description: "stalkeando a julia minegirl",
+        statusPing: "1296525437576413204",
+        playingPing: "1296525430689497088",
         vcStatusId: "1296162311308054528",
-        updatesTcId: "1296158553702400040"
+        updatesTcId: "1296526135525507082"
     },
     port: 80
 };

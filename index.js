@@ -81,11 +81,11 @@ async function check(individual) {
                             const row = new ActionRowBuilder()
                                 .addComponents(button);
                             send({
-                                content: `\`🟢\` **[${config.users[userId].preDisplay} ${config.users[userId].displayName}](<https://www.roblox.com/users/${userId}/profile>)** está jogando [${lastLocation}](https://www.roblox.com/games/${placeId})${sessionInfo.users[userId].lastStatus > 0 ? `\n-# ficou ${statusText[sessionInfo.users[userId].lastStatus]}${sessionInfo.users[userId].lastStatus === 2 ? " " + sessionInfo.users[userId].lastLocation : ""} por ${timeSince(sessionInfo.users[userId].lastStatusBegin)}` : ""}`,
+                                content: `\`🟢\` **[${config.users[userId].preDisplay} ${config.users[userId].displayName}](<https://www.roblox.com/users/${userId}/profile>)** está jogando [${lastLocation}](https://www.roblox.com/games/${placeId})${sessionInfo.users[userId].lastStatus > 0 ? `\n-# ficou ${statusText[sessionInfo.users[userId].lastStatus]}${sessionInfo.users[userId].lastStatus === 2 ? " " + sessionInfo.users[userId].lastLocation : ""} por ${timeSince(sessionInfo.users[userId].lastStatusBegin)}` : ""}\n-# ||<@&${config.discord.playingPing}>||`,
                                 components: [row]
                             });
                         } else {
-                            send(`\`${statusEmoji[userPresenceType]}\` **[${config.users[userId].preDisplay} ${config.users[userId].displayName}](<https://www.roblox.com/users/${userId}/profile>)** está ${statusText[userPresenceType]}${sessionInfo.users[userId].lastStatus > 0 ? `\n-# ficou ${statusText[sessionInfo.users[userId].lastStatus]}${sessionInfo.users[userId].lastStatus === 2 ? " " + sessionInfo.users[userId].lastLocation : ""} por ${timeSince(sessionInfo.users[userId].lastStatusBegin)}` : ""}`);
+                            send(`\`${statusEmoji[userPresenceType]}\` **[${config.users[userId].preDisplay} ${config.users[userId].displayName}](<https://www.roblox.com/users/${userId}/profile>)** está ${statusText[userPresenceType]}${sessionInfo.users[userId].lastStatus > 0 ? `\n-# ficou ${statusText[sessionInfo.users[userId].lastStatus]}${sessionInfo.users[userId].lastStatus === 2 ? " " + sessionInfo.users[userId].lastLocation : ""} por ${timeSince(sessionInfo.users[userId].lastStatusBegin)}` : ""}\n-# ||<@&${config.discord.statusPing}>||`);
                         };
                         sessionInfo.users[userId].lastLocation = lastLocation;
                         sessionInfo.users[presence.userId].lastStatusBegin = new Date().toISOString();
